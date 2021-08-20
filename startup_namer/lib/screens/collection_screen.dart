@@ -3,6 +3,7 @@ import 'package:cards.io/api.dart';
 import 'package:cards.io/screens/code_screen.dart';
 import 'package:cards.io/screens/components/collection.dart';
 import 'package:cards.io/screens/components/player.dart';
+import 'package:cards.io/screens/shop_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cards.io/screens/components/card.dart' as Card;
@@ -86,7 +87,9 @@ class _CollectionScreenState extends State {
     });
     if (index == 1) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => CodeScreen(player: player)));
-    } 
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ShopScreen(player: player)));
+    }
   }
 
   @override
@@ -95,6 +98,19 @@ class _CollectionScreenState extends State {
     return Scaffold(
       appBar: AppBar(
         title: Text(collection.name),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+            children: [
+              Icon(
+                Icons.savings,
+                color: Colors.yellow.shade600,
+              ),
+              Text(player.cashCard.toString())
+            ]),
+          ),
+        ],
       ),
       body: Container (
         padding: EdgeInsets.all(16.0),

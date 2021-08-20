@@ -1,10 +1,10 @@
 class Card {
-  final int id;
-  final int collectionId;
-  final int idInCollection;
+  int id;
+  int collectionId;
+  int idInCollection;
   String imageUrl;
-  final String label;
-  final String cardRarity;
+  String label;
+  String cardRarity;
 
   Card({
     required this.id,

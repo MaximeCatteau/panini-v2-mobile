@@ -5,6 +5,7 @@ import 'package:cards.io/screens/code_screen.dart';
 import 'package:cards.io/screens/collection_screen.dart';
 import 'package:cards.io/screens/components/collection.dart';
 import 'package:cards.io/screens/components/player.dart';
+import 'package:cards.io/screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 
 /*class CollectionList extends StatelessWidget {
@@ -54,14 +55,20 @@ class _CollectionsListState extends State {
   int _selectedIndex = 0;
   
   _getCollections(categoryId) {
-    print("### GET COLLECTIONS CALLED with $categoryId");
-    API.getCollectionsByCategoryId(categoryId).then((response) {
+    API.getCollectionsOwnedByPlayer(player.username, player.password, categoryId).then((response) {
       setState(() {
         Iterable list = json.decode(utf8.decode(response.bodyBytes));
         collectionsList = list.map((model) => Collection.fromJson(model)).toList();
-        print(collectionsList);
       });
     });
+  }
+
+  _getCollectionImage(index) {
+    if (collectionsList[index].imageUrl != Null) {
+      return NetworkImage(collectionsList[index].imageUrl);
+    } else {
+      return NetworkImage("https://cdn.pixabay.com/photo/2020/02/11/16/25/manarola-4840080_960_720.jpg");
+    }
   }
 
   @override
@@ -82,7 +89,9 @@ class _CollectionsListState extends State {
     });
     if (index == 1) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => CodeScreen(player: player)));
-    } 
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ShopScreen(player: player)));
+    }
   }
 
   void collectionClicked(collection) {
@@ -95,6 +104,19 @@ class _CollectionsListState extends State {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Liste des collections :"),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+            children: [
+              Icon(
+                Icons.savings,
+                color: Colors.yellow.shade600,
+              ),
+              Text(player.cashCard.toString())
+            ]),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: collectionsList.length,
@@ -103,8 +125,8 @@ class _CollectionsListState extends State {
           return Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: const NetworkImage("https://cdn.pixabay.com/photo/2020/02/11/16/25/manarola-4840080_960_720.jpg"),
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                image: _getCollectionImage(index),
+                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.dstATop),
                 fit: BoxFit.cover
               )
             ),
@@ -112,7 +134,8 @@ class _CollectionsListState extends State {
               title: Text(
                 collectionsList[index].name,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
                 ),
               ),
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CollectionScreen(collection: collectionsList[index], player: player))),

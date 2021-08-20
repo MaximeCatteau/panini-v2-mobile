@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:cards.io/api.dart';
+import 'package:cards.io/screens/card_package_screen.dart';
 import 'package:cards.io/screens/category_list.dart';
+import 'package:cards.io/screens/components/card.dart' as c;
 import 'package:cards.io/screens/components/player.dart';
 import 'package:cards.io/screens/register_screen.dart';
+import 'package:cards.io/screens/shop_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,14 +27,21 @@ class _CodeScreenState extends State<CodeScreen> {
     required this.player
   });
 
-  final Player player;
+  Player player;
   int _selectedIndex = 1;
   final codeController = TextEditingController();
 
   void _checkCode(code) {
+    List<c.Card> cards = [];
     API.consumeCode(code, player.username, player.password).then((response) => {
       if (response.statusCode == 200) {
-        print(response)
+        setState(() {
+          Iterable list = json.decode(utf8.decode(response.bodyBytes));
+          cards = list.map((model) => c.Card.fromJson(model)).toList();
+        }),
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CardPackageScreen(cards: cards, player: player)))
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CodeScreen(player: player)))
       }
     });
   }
@@ -41,7 +53,9 @@ class _CodeScreenState extends State<CodeScreen> {
     });
     if (index == 0) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryListScreen(player: player)));
-    } 
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ShopScreen(player: player)));
+    }
   }
 
   @override
@@ -51,6 +65,19 @@ class _CodeScreenState extends State<CodeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Code de carte"),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+            children: [
+              Icon(
+                Icons.savings,
+                color: Colors.yellow.shade600,
+              ),
+              Text(player.cashCard.toString())
+            ]),
+          ),
+        ],
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,

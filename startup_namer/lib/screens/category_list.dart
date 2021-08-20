@@ -5,6 +5,7 @@ import 'package:cards.io/screens/code_screen.dart';
 import 'package:cards.io/screens/collection_list.dart';
 import 'package:cards.io/screens/components/category.dart';
 import 'package:cards.io/screens/components/player.dart';
+import 'package:cards.io/screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 
 class CategoryListScreen extends StatefulWidget {
@@ -54,6 +55,8 @@ class _CategoryListScreenState extends State{
     });
     if (index == 1) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => CodeScreen(player: player)));
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ShopScreen(player: player)));
     } 
   }
 
@@ -62,7 +65,20 @@ class _CategoryListScreenState extends State{
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories List"),
+        title: const Text("Catégories"),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+            children: [
+              Icon(
+                Icons.savings,
+                color: Colors.yellow.shade600,
+              ),
+              Text(player.cashCard.toString())
+            ]),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: categories.length,
