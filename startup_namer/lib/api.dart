@@ -4,8 +4,8 @@ import 'package:cards.io/main.dart';
 import 'package:http/http.dart' as http;
 
 class API {
-  //static const baseUrl = "https://young-waters-05741.herokuapp.com";
-  static const baseUrl = "http://192.168.1.15:8080";
+  static const baseUrl = "https://young-waters-05741.herokuapp.com";
+  //static const baseUrl = "http://192.168.1.15:8080";
 
   static Future getCategories() {
     var url = baseUrl + "/categories";
